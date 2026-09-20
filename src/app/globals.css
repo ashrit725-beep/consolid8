@@ -1,0 +1,248 @@
+@import "tailwindcss";
+
+/* =============================================================================
+   CONSOLID8 DESIGN TOKENS
+   -----------------------------------------------------------------------------
+   This file is intentionally frozen after initial setup. Feature work should
+   consume these tokens via Tailwind utilities (bg-surface, text-muted, ...) or
+   via src/config/statusStyles.ts. Do NOT add feature-specific CSS here.
+   ========================================================================== */
+
+@theme {
+  /* --- surfaces ----------------------------------------------------------- */
+  --color-canvas: #07080a;
+  --color-surface: #0b0d11;
+  --color-surface-raised: #101318;
+  --color-surface-overlay: #14181f;
+  --color-surface-inset: #08090c;
+
+  /* --- lines -------------------------------------------------------------- */
+  --color-line: #1b2028;
+  --color-line-strong: #262d38;
+  --color-line-soft: #14181e;
+
+  /* --- foreground ---------------------------------------------------------
+     Contrast ladder, measured against every surface in the app. The weakest
+     pairing (on --color-surface-raised #101318) is the one quoted:
+       fg 15.4:1   fg-muted 6.7:1   fg-dim 5.5:1   fg-faint 4.6:1
+     EVERY tier clears WCAG AA (4.5:1) for normal-size text. That matters
+     because this UI is metadata-dense: a census of /inspector found 148 text
+     nodes at 10px rendering in fg-faint -- source refs, unit suffixes,
+     denominators. A tier that carries words has to be readable, so the floor
+     is set at AA rather than relying on a convention that call sites were
+     already ignoring.
+     fg-faint remains the tier for hairline glyphs, dividers and tick marks;
+     it is simply no longer a liability when a word lands in it.
+     ------------------------------------------------------------------- */
+  --color-fg: #e7eaf0;
+  --color-fg-muted: #949cab;
+  --color-fg-dim: #838c9c;
+  --color-fg-faint: #767f90;
+
+  /* --- semantic signals --------------------------------------------------- */
+  --color-signal: #3fd98b;
+  --color-signal-dim: #1d6b48;
+  --color-danger: #ff5d5d;
+  --color-danger-dim: #6e2626;
+  --color-warn: #e0a84b;
+  --color-warn-dim: #6b4f1c;
+  --color-info: #5aa2ff;
+  --color-info-dim: #1f4478;
+
+  /* --- classification hues ------------------------------------------------ */
+  --color-pinned: #3fd98b;
+  --color-retrieved: #5aa2ff;
+  --color-cacheable: #46c6d9;
+  --color-compressed: #e0a84b;
+  --color-omitted: #707a8a;
+  --color-stale: #e0703c;
+  --color-conflict: #f2557a;
+  --color-critical: #ff5d5d;
+
+  /* --- type --------------------------------------------------------------- */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1rem;
+
+  /* --- radii -------------------------------------------------------------- */
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 7px;
+  --radius-lg: 10px;
+
+  /* --- motion ------------------------------------------------------------- */
+  --animate-fade-in: fade-in 0.22s ease-out both;
+  --animate-rise: rise 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-slide-in: slide-in 0.24s cubic-bezier(0.22, 1, 0.36, 1) both;
+  --animate-pulse-soft: pulse-soft 1.8s ease-in-out infinite;
+  --animate-scan: scan 1.4s linear infinite;
+  --animate-shimmer: shimmer 1.6s linear infinite;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(300%);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* =============================================================================
+   BASE
+   ========================================================================== */
+
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
+
+  html {
+    color-scheme: dark;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 13px;
+    line-height: 1.5;
+    letter-spacing: -0.006em;
+  }
+
+  ::selection {
+    background-color: color-mix(in oklab, var(--color-signal) 28%, transparent);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-info);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Scrollbars: thin, unobtrusive, dark-native. */
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line-strong);
+    border-radius: 99px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a434f;
+    background-clip: content-box;
+  }
+
+  table {
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+}
+
+/* =============================================================================
+   SHARED UTILITIES
+   ========================================================================== */
+
+/* Numeric readouts: monospace + tabular figures so metrics never jitter. */
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  letter-spacing: -0.02em;
+}
+
+/* Small uppercase label used for every section/metric caption. */
+@utility label-xs {
+  font-size: 0.625rem;
+  line-height: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-fg-dim);
+}
+
+/* Hairline grid texture for hero/empty surfaces. Subtle by design. */
+@utility grid-texture {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-line) 60%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-line) 60%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+@utility hide-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
